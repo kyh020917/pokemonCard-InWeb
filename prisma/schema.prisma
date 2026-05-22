@@ -1,0 +1,208 @@
+// 프로덕션 PostgreSQL 스키마
+// 로컬 개발은 prisma/schema.dev.prisma 사용
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String?   @unique
+  name           String?
+  image          String?
+  kakaoId        String?   @unique
+  username       String    @unique
+  coins          Int       @default(1000)
+  referralCode   String    @unique
+  referredById   String?
+  lastAttendance DateTime?
+  streakCount    Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  referredBy     User?         @relation("Referral", fields: [referredById], references: [id])
+  referrals      User[]        @relation("Referral")
+  userCards      UserCard[]
+  listings       Listing[]
+  tradesProposed Trade[]       @relation("proposer")
+  tradesReceived Trade[]       @relation("receiver")
+  transactions   Transaction[]
+  userMissions   UserMission[]
+  accounts       Account[]
+  sessions       Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model CardSet {
+  id          String    @id
+  name        String
+  series      String
+  total       Int
+  logoUrl     String?
+  symbolUrl   String?
+  releaseDate DateTime?
+  isActive    Boolean   @default(true)
+  packPrice   Int       @default(300)
+  createdAt   DateTime  @default(now())
+
+  cards Card[]
+}
+
+model Card {
+  id         String   @id
+  setId      String
+  name       String
+  rarity     String
+  tier       Tier
+  hp         Int?
+  types      String   @default("[]")
+  imageSmall String
+  imageLarge String
+  number     String
+  createdAt  DateTime @default(now())
+
+  set       CardSet    @relation(fields: [setId], references: [id])
+  userCards UserCard[]
+  listings  Listing[]
+}
+
+enum Tier {
+  C
+  U
+  R
+  HR
+  UR
+  SR
+}
+
+model UserCard {
+  id         String   @id @default(cuid())
+  userId     String
+  cardId     String
+  quantity   Int      @default(1)
+  obtainedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card Card @relation(fields: [cardId], references: [id])
+
+  @@unique([userId, cardId])
+}
+
+model Listing {
+  id        String        @id @default(cuid())
+  sellerId  String
+  cardId    String
+  quantity  Int           @default(1)
+  price     Int
+  status    ListingStatus @default(ACTIVE)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  seller User @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  card   Card @relation(fields: [cardId], references: [id])
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  CANCELLED
+}
+
+model Trade {
+  id             String      @id @default(cuid())
+  proposerId     String
+  receiverId     String
+  offeredCards   Json
+  requestedCards Json
+  message        String?
+  status         TradeStatus @default(PENDING)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  proposer User @relation("proposer", fields: [proposerId], references: [id], onDelete: Cascade)
+  receiver User @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+enum TradeStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELLED
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  userId    String
+  type      TxType
+  amount    Int
+  reason    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum TxType {
+  EARN
+  SPEND
+}
+
+model Mission {
+  id          String  @id @default(cuid())
+  key         String  @unique
+  title       String
+  description String
+  reward      Int
+  isActive    Boolean @default(true)
+
+  userMissions UserMission[]
+}
+
+model UserMission {
+  userId      String
+  missionId   String
+  completedAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mission Mission @relation(fields: [missionId], references: [id])
+
+  @@id([userId, missionId])
+}

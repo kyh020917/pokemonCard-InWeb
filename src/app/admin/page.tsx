@@ -5,9 +5,9 @@ import { Database } from "lucide-react";
 
 export default async function AdminPage() {
   const session = await auth();
-  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminId = process.env.ADMIN_USER_ID;
 
-  if (!session?.user || session.user.email !== adminEmail) {
+  if (!session?.user || session.user.id !== adminId) {
     redirect("/");
   }
 

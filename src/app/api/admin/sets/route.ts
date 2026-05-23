@@ -8,8 +8,8 @@ const fetchHeaders: Record<string, string> = API_KEY ? { "X-Api-Key": API_KEY } 
 
 export async function GET() {
   const session = await auth();
-  const adminEmail = process.env.ADMIN_EMAIL;
-  if (!session?.user || session.user.email !== adminEmail) {
+  const adminId = process.env.ADMIN_USER_ID;
+  if (!session?.user || session.user.id !== adminId) {
     return NextResponse.json({ error: "권한이 없습니다." }, { status: 401 });
   }
 

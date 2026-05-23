@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
   if (!setRes.ok) return NextResponse.json({ error: "세트를 찾을 수 없습니다." }, { status: 404 });
   const { data: tcgSet } = await setRes.json();
 
-  // 세트 upsert
+  // 세트 upsert (동기화 완료 시 isActive: true 로 설정)
   await prisma.cardSet.upsert({
     where: { id: tcgSet.id },
     update: {
@@ -78,6 +78,7 @@ export async function POST(req: NextRequest) {
       logoUrl: tcgSet.images?.logo ?? null,
       symbolUrl: tcgSet.images?.symbol ?? null,
       releaseDate: tcgSet.releaseDate ? new Date(tcgSet.releaseDate) : null,
+      isActive: true,
     },
     create: {
       id: tcgSet.id,
@@ -87,6 +88,7 @@ export async function POST(req: NextRequest) {
       logoUrl: tcgSet.images?.logo ?? null,
       symbolUrl: tcgSet.images?.symbol ?? null,
       releaseDate: tcgSet.releaseDate ? new Date(tcgSet.releaseDate) : null,
+      isActive: true,
     },
   });
 

@@ -73,6 +73,8 @@ export function ShopClient() {
       qc.invalidateQueries({ queryKey: ["shopMyCards"] });
       qc.invalidateQueries({ queryKey: ["userCoins"] });
       qc.invalidateQueries({ queryKey: ["userMe"] });
+      qc.invalidateQueries({ queryKey: ["collection"] });
+      qc.invalidateQueries({ queryKey: ["collectionStats"] });
       toast.success(
         `${data.soldCount}장 판매 완료! +${data.coinsEarned.toLocaleString()} 코인`
       );

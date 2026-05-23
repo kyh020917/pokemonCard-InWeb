@@ -41,10 +41,19 @@ export function SyncClient() {
     queryFn: () => axios.get("/api/admin/sets").then((r) => r.data.sets),
   });
 
-  function handleCancel() {
+  async function handleCancel() {
+    const id = syncingId;
     abortRef.current?.abort();
     abortRef.current = null;
     setSyncingId(null);
+    if (id) {
+      try {
+        await axios.patch(`/api/admin/sets/${id}`, { isActive: false });
+        qc.invalidateQueries({ queryKey: ["adminSets"] });
+      } catch {
+        // ignore
+      }
+    }
     toast.info("동기화가 취소되었습니다.");
   }
 
@@ -201,6 +210,11 @@ export function SyncClient() {
                         <div className="flex items-center gap-2">
                           <span className="font-medium text-white text-sm truncate">{set.name}</span>
                           <span className="text-xs text-white/30 shrink-0">{set.id}</span>
+                          {set.synced && !set.isActive && (
+                            <span className="text-xs bg-red-500/20 border border-red-500/40 text-red-400 px-1.5 py-0.5 rounded-full shrink-0">
+                              비활성
+                            </span>
+                          )}
                         </div>
                         <div className="flex items-center gap-3 text-xs text-white/40 mt-0.5 flex-wrap">
                           <span>{set.releaseDate} · 총 {set.total}장</span>
@@ -265,13 +279,15 @@ export function SyncClient() {
                             onClick={() => syncSet(set.id)}
                             disabled={syncingId !== null}
                             className={
-                              set.synced
+                              set.synced && !set.isActive
+                                ? "bg-orange-600 hover:bg-orange-500 text-white font-bold"
+                                : set.synced
                                 ? "bg-zinc-700 hover:bg-zinc-600 text-white/70"
                                 : "bg-yellow-500 hover:bg-yellow-400 text-black font-bold"
                             }
                           >
                             <RefreshCw className="w-3 h-3" />
-                            {set.synced ? "재동기화" : "동기화"}
+                            {set.synced && !set.isActive ? "재활성화" : set.synced ? "재동기화" : "동기화"}
                           </Button>
                         )}
                       </div>

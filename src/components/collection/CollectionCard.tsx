@@ -50,7 +50,10 @@ export function CollectionCard({ card, quantity, index, onClick }: CollectionCar
       </HoloEffect>
       <div className="mt-1.5 px-0.5">
         <TierBadge tier={card.tier} className="text-[10px]" />
-        <p className="text-xs text-white/70 truncate mt-0.5">{card.name}</p>
+        <p className="text-xs text-white/70 truncate mt-0.5">
+          {card.name}
+          {quantity > 1 && <span className="text-white/40 ml-1">×{quantity}</span>}
+        </p>
       </div>
     </motion.div>
   );

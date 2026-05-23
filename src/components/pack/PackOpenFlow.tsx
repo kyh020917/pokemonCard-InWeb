@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -168,7 +168,7 @@ export function PackOpenFlow({
               <OneByOneView cards={cards} onReveal={handleCardRevealed} onDone={handleReset} />
             )}
             {mode === "all_at_once" && (
-              <AllAtOnceView cards={cards} onAllRevealed={() => setTimeout(() => setStep("result"), 1000)} />
+              <AllAtOnceView cards={cards} onDone={handleReset} />
             )}
           </motion.div>
         )}
@@ -354,11 +354,20 @@ function OneByOneView({
 /* ─── 전체 공개 뷰 ─── */
 function AllAtOnceView({
   cards,
-  onAllRevealed,
+  onDone,
 }: {
   cards: CardResult[];
-  onAllRevealed: () => void;
+  onDone: () => void;
 }) {
+  const [showButtons, setShowButtons] = useState(false);
+
+  useEffect(() => {
+    // 마지막 카드 공개 시간: (n-1)*300+200ms flip + 350ms reveal + 여유 500ms
+    const lastReveal = (cards.length - 1) * 300 + 200 + 350 + 600;
+    const t = setTimeout(() => setShowButtons(true), lastReveal);
+    return () => clearTimeout(t);
+  }, [cards.length]);
+
   return (
     <div className="flex flex-col items-center gap-6">
       <p className="text-white/50 text-sm">5장 동시 공개</p>
@@ -370,10 +379,32 @@ function AllAtOnceView({
             autoFlip
             delay={i * 300 + 200}
             size="md"
-            onClick={i === 4 ? onAllRevealed : undefined}
           />
         ))}
       </div>
+
+      {showButtons && (
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex gap-3 mt-2"
+        >
+          <Button
+            onClick={onDone}
+            variant="outline"
+            className="gap-2 border-white/20 hover:bg-white/10"
+          >
+            <RotateCcw className="w-4 h-4" />
+            다시 뽑기
+          </Button>
+          <Link href="/collection">
+            <Button className="gap-2 bg-zinc-700 hover:bg-zinc-600">
+              <BookOpen className="w-4 h-4" />
+              도감 보기
+            </Button>
+          </Link>
+        </motion.div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { SyncClient } from "@/components/admin/SyncClient";
+import { TierPriceEditor } from "@/components/admin/TierPriceEditor";
 import { Database } from "lucide-react";
 
 export default async function AdminPage() {
@@ -23,7 +24,16 @@ export default async function AdminPage() {
             <p className="text-white/40 text-sm">포켓몬 TCG API에서 카드 데이터를 동기화합니다</p>
           </div>
         </div>
-        <SyncClient />
+        <div className="space-y-10">
+          <section>
+            <h2 className="text-lg font-bold text-white mb-4">카드 세트 동기화</h2>
+            <SyncClient />
+          </section>
+          <section>
+            <h2 className="text-lg font-bold text-white mb-4">카드 상점 설정</h2>
+            <TierPriceEditor />
+          </section>
+        </div>
       </div>
     </div>
   );

@@ -186,6 +186,12 @@ enum TxType {
   SPEND
 }
 
+model TierConfig {
+  tier    Tier    @id
+  price   Int     @default(100)
+  enabled Boolean @default(true)
+}
+
 model Mission {
   id          String  @id @default(cuid())
   key         String  @unique

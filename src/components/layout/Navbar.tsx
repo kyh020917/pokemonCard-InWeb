@@ -14,6 +14,7 @@ import {
   User,
   Menu,
   Zap,
+  ShoppingBag,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -21,6 +22,7 @@ import { useState } from "react";
 
 const NAV_ITEMS = [
   { href: "/pack", label: "팩 뽑기", icon: Package },
+  { href: "/shop", label: "상점", icon: ShoppingBag },
   { href: "/collection", label: "도감", icon: BookOpen },
   { href: "/market", label: "거래소", icon: Store },
   { href: "/trade", label: "트레이드", icon: ArrowLeftRight },

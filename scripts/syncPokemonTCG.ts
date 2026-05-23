@@ -4,9 +4,27 @@
  * 특정 세트만: npx tsx scripts/syncPokemonTCG.ts sv3
  */
 
+import * as fs from "fs";
+import * as path from "path";
+import * as dotenv from "dotenv";
+dotenv.config({ path: ".env" });
+if (fs.existsSync(".env.local")) dotenv.config({ path: ".env.local", override: true });
+
 import { PrismaClient, Tier } from "@prisma/client";
 
-const prisma = new PrismaClient();
+function createClient() {
+  const dbUrl = process.env.DATABASE_URL ?? "";
+  if (dbUrl.startsWith("file:")) {
+    const absUrl = `file:${path.resolve(dbUrl.slice(5))}`;
+    process.env.DATABASE_URL = absUrl;
+    const { PrismaLibSql } = require("@prisma/adapter-libsql");
+    return new PrismaClient({ adapter: new PrismaLibSql({ url: absUrl }), log: ["error"] });
+  }
+  const { PrismaPg } = require("@prisma/adapter-pg");
+  return new PrismaClient({ adapter: new PrismaPg({ connectionString: dbUrl }), log: ["error"] });
+}
+
+const prisma = createClient();
 const API_BASE = "https://api.pokemontcg.io/v2";
 const API_KEY = process.env.POKEMON_TCG_API_KEY ?? "";
 

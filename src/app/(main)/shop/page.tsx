@@ -16,8 +16,8 @@ export default async function ShopPage() {
           <ShoppingBag className="w-5 h-5 text-yellow-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-black text-white">카드 판매</h1>
-          <p className="text-white/40 text-sm">보유한 카드를 코인으로 판매하세요</p>
+          <h1 className="text-2xl font-black text-gray-900">카드 판매</h1>
+          <p className="text-gray-500 text-sm">보유한 카드를 코인으로 판매하세요</p>
         </div>
       </div>
       <ShopClient />

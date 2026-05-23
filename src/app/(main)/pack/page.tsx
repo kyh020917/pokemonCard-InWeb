@@ -13,12 +13,12 @@ export default async function PackPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white">팩 뽑기</h1>
-        <p className="text-white/50 mt-1">원하는 팩을 선택해서 카드를 뽑아보세요</p>
+        <h1 className="text-3xl font-black text-gray-900">팩 뽑기</h1>
+        <p className="text-gray-500 mt-1">원하는 팩을 선택해서 카드를 뽑아보세요</p>
       </div>
 
       {sets.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-32 text-white/30">
+        <div className="flex flex-col items-center justify-center py-32 text-gray-400">
           <span className="text-6xl mb-4">📦</span>
           <p className="text-lg font-medium">등록된 팩이 없습니다</p>
           <p className="text-sm mt-1">관리자가 TCG 데이터를 동기화하면 여기에 표시됩니다</p>

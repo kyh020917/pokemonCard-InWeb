@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -12,24 +13,32 @@ export default function LoginPage() {
   const [showDevLogin, setShowDevLogin] = useState(false);
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+    <div className="min-h-screen bg-amber-50 flex items-center justify-center">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col items-center gap-8 p-10 bg-zinc-900 border border-white/10 rounded-3xl w-full max-w-sm"
+        className="flex flex-col items-center gap-8 p-10 bg-white border border-gray-200 rounded-3xl w-full max-w-sm shadow-lg"
       >
         <div className="text-center">
           <motion.div
-            animate={{ rotate: [0, -5, 5, -5, 0] }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            className="text-6xl mb-4"
+            animate={{ rotate: [0, -10, 10, -10, 0] }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="flex justify-center mb-4"
           >
-            🎴
+            <div className="relative w-20 h-20">
+              <Image
+                src="/pokeball.png"
+                alt="포켓볼"
+                fill
+                className="object-contain"
+                sizes="80px"
+              />
+            </div>
           </motion.div>
-          <h1 className="text-3xl font-black bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-black bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">
             카드깡
           </h1>
-          <p className="text-white/40 text-sm mt-2">포켓몬 TCG 카드 뽑기</p>
+          <p className="text-gray-400 text-sm mt-2">포켓몬 TCG 카드 뽑기</p>
         </div>
 
         <div className="w-full flex flex-col gap-3">
@@ -44,7 +53,7 @@ export default function LoginPage() {
           {isDev && !showDevLogin && (
             <button
               onClick={() => setShowDevLogin(true)}
-              className="text-xs text-white/20 hover:text-white/40 transition-colors text-center mt-1"
+              className="text-xs text-gray-300 hover:text-gray-500 transition-colors text-center mt-1"
             >
               🛠 개발용 테스트 로그인
             </button>
@@ -54,14 +63,14 @@ export default function LoginPage() {
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              className="flex flex-col gap-2 border border-white/10 rounded-xl p-3"
+              className="flex flex-col gap-2 border border-gray-200 rounded-xl p-3"
             >
-              <p className="text-xs text-yellow-400 font-bold">🛠 개발용 테스트 로그인</p>
+              <p className="text-xs text-yellow-600 font-bold">🛠 개발용 테스트 로그인</p>
               <input
                 value={devUsername}
                 onChange={(e) => setDevUsername(e.target.value)}
                 placeholder="닉네임 (영문)"
-                className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-yellow-400/50"
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-yellow-400/50"
               />
               <Button
                 onClick={() =>
@@ -70,7 +79,7 @@ export default function LoginPage() {
                     callbackUrl: "/pack",
                   })
                 }
-                className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 rounded-lg"
+                className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 rounded-lg"
               >
                 테스트 로그인
               </Button>
@@ -78,7 +87,7 @@ export default function LoginPage() {
           )}
         </div>
 
-        <p className="text-xs text-white/20 text-center">
+        <p className="text-xs text-gray-400 text-center">
           로그인 시 회원가입 1,000 코인이 지급됩니다
         </p>
       </motion.div>

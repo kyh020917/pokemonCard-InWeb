@@ -37,7 +37,7 @@ export function PackCard({
         <motion.div
           whileHover={{ y: -6, scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="group bg-zinc-800/60 border border-white/10 rounded-2xl p-5 flex flex-col items-center gap-4 hover:border-yellow-500/40 hover:bg-zinc-700/60 transition-colors cursor-pointer"
+          className="group bg-zinc-800 border border-zinc-700 rounded-2xl p-5 flex flex-col items-center gap-4 hover:border-yellow-500/50 hover:bg-zinc-700 transition-colors cursor-pointer shadow-md hover:shadow-xl"
         >
           <div className="relative w-full h-28">
             {logoUrl && !imgError ? (

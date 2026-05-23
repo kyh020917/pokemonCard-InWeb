@@ -11,8 +11,8 @@ export default async function ActivityPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white">활동</h1>
-        <p className="text-white/50 mt-1">출석체크, 미션, 추천인 혜택을 확인하세요</p>
+        <h1 className="text-3xl font-black text-gray-900">활동</h1>
+        <p className="text-gray-500 mt-1">출석체크, 미션, 추천인 혜택을 확인하세요</p>
       </div>
       <ActivityClient />
     </div>

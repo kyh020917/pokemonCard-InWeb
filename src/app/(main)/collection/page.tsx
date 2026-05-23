@@ -18,8 +18,8 @@ export default async function CollectionPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white">내 도감</h1>
-        <p className="text-white/50 mt-1">보유한 카드를 확인하고 세트 완성도를 체크해보세요</p>
+        <h1 className="text-3xl font-black text-gray-900">내 도감</h1>
+        <p className="text-gray-500 mt-1">보유한 카드를 확인하고 세트 완성도를 체크해보세요</p>
       </div>
       <CollectionClient sets={sets} />
     </div>

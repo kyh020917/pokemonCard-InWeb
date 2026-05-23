@@ -47,8 +47,8 @@ export function TierPriceEditor() {
   return (
     <div className="bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden">
       <div className="px-5 py-4 border-b border-white/10">
-        <h2 className="font-bold text-white">등급별 판매 가격</h2>
-        <p className="text-xs text-white/40 mt-0.5">카드 상점에서 등급별로 판매되는 가격을 설정합니다</p>
+        <h2 className="font-bold text-white">등급별 카드 매입 가격</h2>
+        <p className="text-xs text-white/40 mt-0.5">유저가 카드를 판매할 때 지급되는 코인 금액을 설정합니다</p>
       </div>
       <div className="divide-y divide-white/5">
         {TIER_ORDER.map((tier) => {

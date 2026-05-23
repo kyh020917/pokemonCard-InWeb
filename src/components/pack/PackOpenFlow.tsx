@@ -305,6 +305,7 @@ function OneByOneView({
 
       {current < cards.length && card && (
         <CardFlip
+          key={current}
           card={{ ...card.card, isNew: card.isNew }}
           size="lg"
           onClick={handleFlip}

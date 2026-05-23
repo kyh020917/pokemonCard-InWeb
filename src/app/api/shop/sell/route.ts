@@ -35,7 +35,8 @@ export async function POST(req: NextRequest) {
   const tierMap = new Map(tiers.map((t) => [t.tier, t]));
 
   let totalCoins = 0;
-  const ops: Parameters<typeof prisma.$transaction>[0] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ops: Promise<any>[] = [];
 
   for (const item of items) {
     const uc = userCards.find((c) => c.id === item.userCardId)!;

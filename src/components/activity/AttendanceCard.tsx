@@ -52,14 +52,14 @@ export function AttendanceCard({ streakCount, lastAttendance }: Props) {
   const daysUntilBonus = nextMilestone - currentStreak;
 
   return (
-    <div className="bg-zinc-900 border border-white/10 rounded-2xl p-6 space-y-5">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-5 shadow-sm">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
-          <CalendarCheck className="w-5 h-5 text-orange-400" />
+        <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+          <CalendarCheck className="w-5 h-5 text-orange-500" />
         </div>
         <div>
-          <h2 className="font-bold text-white">출석체크</h2>
-          <p className="text-xs text-white/40">매일 출석하면 코인을 획득해요</p>
+          <h2 className="font-bold text-gray-900">출석체크</h2>
+          <p className="text-xs text-gray-400">매일 출석하면 코인을 획득해요</p>
         </div>
       </div>
 
@@ -74,28 +74,28 @@ export function AttendanceCard({ streakCount, lastAttendance }: Props) {
                 className={`w-full aspect-square rounded-lg flex items-center justify-center text-xs font-bold transition-all ${
                   filled
                     ? "bg-orange-500 text-white"
-                    : "bg-zinc-800 text-white/20"
-                } ${isToday ? "ring-2 ring-orange-400 ring-offset-1 ring-offset-zinc-900" : ""}`}
+                    : "bg-gray-100 text-gray-300"
+                } ${isToday ? "ring-2 ring-orange-400 ring-offset-1 ring-offset-white" : ""}`}
               >
                 {filled ? <Flame className="w-3 h-3" /> : null}
               </div>
-              <span className="text-[10px] text-white/30">{day}</span>
+              <span className="text-[10px] text-gray-400">{day}</span>
             </div>
           );
         })}
       </div>
 
       {/* 스트릭 정보 */}
-      <div className="flex items-center justify-between bg-zinc-800 rounded-xl px-4 py-3">
+      <div className="flex items-center justify-between bg-orange-50 border border-orange-100 rounded-xl px-4 py-3">
         <div className="flex items-center gap-2">
           <Flame className="w-5 h-5 text-orange-400" />
-          <span className="text-sm text-white">
-            <span className="font-black text-orange-400">{currentStreak}일</span> 연속 출석
+          <span className="text-sm text-gray-700">
+            <span className="font-black text-orange-500">{currentStreak}일</span> 연속 출석
           </span>
         </div>
         <div className="text-right">
-          <p className="text-xs text-white/40">다음 보너스까지</p>
-          <p className="text-sm font-bold text-yellow-400">{daysUntilBonus}일 남음 (+500)</p>
+          <p className="text-xs text-gray-400">다음 보너스까지</p>
+          <p className="text-sm font-bold text-yellow-600">{daysUntilBonus}일 남음 (+500)</p>
         </div>
       </div>
 
@@ -106,13 +106,13 @@ export function AttendanceCard({ streakCount, lastAttendance }: Props) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="flex items-center gap-3 bg-yellow-500/10 border border-yellow-500/30 rounded-xl px-4 py-3"
+            className="flex items-center gap-3 bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3"
           >
-            <Gift className="w-5 h-5 text-yellow-400" />
+            <Gift className="w-5 h-5 text-yellow-500" />
             <div>
-              <p className="text-sm font-bold text-yellow-300">+{reward.reward} 코인 획득!</p>
+              <p className="text-sm font-bold text-yellow-700">+{reward.reward} 코인 획득!</p>
               {reward.streakBonus > 0 && (
-                <p className="text-xs text-yellow-400/70">🎉 7일 연속 보너스 +{reward.streakBonus} 포함</p>
+                <p className="text-xs text-yellow-600">🎉 7일 연속 보너스 +{reward.streakBonus} 포함</p>
               )}
             </div>
           </motion.div>
@@ -124,7 +124,7 @@ export function AttendanceCard({ streakCount, lastAttendance }: Props) {
         disabled={attended || isPending}
         className={`w-full font-bold py-5 rounded-xl transition-all ${
           attended
-            ? "bg-zinc-700 text-white/30 cursor-not-allowed"
+            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
             : "bg-orange-500 hover:bg-orange-400 text-white"
         }`}
       >

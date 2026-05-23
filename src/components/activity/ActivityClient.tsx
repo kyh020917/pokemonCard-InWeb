@@ -26,7 +26,7 @@ export function ActivityClient() {
     return (
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="bg-zinc-900 border border-white/10 rounded-2xl h-48 animate-pulse" />
+          <div key={i} className="bg-white border border-gray-200 rounded-2xl h-48 animate-pulse" />
         ))}
       </div>
     );

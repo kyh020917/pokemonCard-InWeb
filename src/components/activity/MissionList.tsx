@@ -34,34 +34,34 @@ export function MissionList() {
 
   if (isLoading) {
     return (
-      <div className="bg-zinc-900 border border-white/10 rounded-2xl p-6 animate-pulse space-y-3">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 animate-pulse space-y-3 shadow-sm">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-14 bg-zinc-800 rounded-xl" />
+          <div key={i} className="h-14 bg-gray-100 rounded-xl" />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="bg-zinc-900 border border-white/10 rounded-2xl p-6 space-y-4">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center">
-            <Trophy className="w-5 h-5 text-yellow-400" />
+          <div className="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center">
+            <Trophy className="w-5 h-5 text-yellow-500" />
           </div>
           <div>
-            <h2 className="font-bold text-white">미션</h2>
-            <p className="text-xs text-white/40">완료하면 코인을 드려요</p>
+            <h2 className="font-bold text-gray-900">미션</h2>
+            <p className="text-xs text-gray-400">완료하면 코인을 드려요</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-sm font-bold text-white">{completed}/{total}</p>
-          <p className="text-xs text-white/40">완료</p>
+          <p className="text-sm font-bold text-gray-900">{completed}/{total}</p>
+          <p className="text-xs text-gray-400">완료</p>
         </div>
       </div>
 
       {/* 진행 바 */}
-      <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: total > 0 ? `${(completed / total) * 100}%` : "0%" }}
@@ -79,25 +79,25 @@ export function MissionList() {
             transition={{ delay: i * 0.05 }}
             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
               mission.completed
-                ? "bg-green-500/10 border border-green-500/20"
-                : "bg-zinc-800 border border-transparent"
+                ? "bg-green-50 border border-green-200"
+                : "bg-gray-50 border border-gray-100"
             }`}
           >
             <span className="text-xl w-8 text-center">
               {MISSION_ICONS[mission.key] ?? "🎯"}
             </span>
             <div className="flex-1 min-w-0">
-              <p className={`text-sm font-medium ${mission.completed ? "text-green-400" : "text-white"}`}>
+              <p className={`text-sm font-medium ${mission.completed ? "text-green-700" : "text-gray-800"}`}>
                 {mission.title}
               </p>
-              <p className="text-xs text-white/40 truncate">{mission.description}</p>
+              <p className="text-xs text-gray-400 truncate">{mission.description}</p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <span className="text-xs font-bold text-yellow-400">+{mission.reward}</span>
+              <span className="text-xs font-bold text-yellow-600">+{mission.reward}</span>
               {mission.completed ? (
-                <CheckCircle2 className="w-5 h-5 text-green-400" />
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
               ) : (
-                <Circle className="w-5 h-5 text-white/20" />
+                <Circle className="w-5 h-5 text-gray-300" />
               )}
             </div>
           </motion.div>

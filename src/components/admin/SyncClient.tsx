@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
-import { RefreshCw, CheckCircle2, Circle, Loader2, ChevronDown, ChevronUp, X } from "lucide-react";
+import { RefreshCw, CheckCircle2, Circle, Loader2, ChevronDown, ChevronUp, X, Pencil, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
@@ -17,6 +17,8 @@ interface SetInfo {
   logoUrl: string | null;
   synced: boolean;
   syncedCount: number;
+  packPrice: number;
+  isActive: boolean;
 }
 
 interface SyncResult {
@@ -31,6 +33,8 @@ export function SyncClient() {
   const [results, setResults] = useState<Record<string, SyncResult>>({});
   const [expandedSeries, setExpandedSeries] = useState<Set<string>>(new Set(["Scarlet & Violet"]));
   const abortRef = useRef<AbortController | null>(null);
+  const [editingPrice, setEditingPrice] = useState<string | null>(null);
+  const [priceInput, setPriceInput] = useState("");
 
   const { data: sets = [], isLoading } = useQuery<SetInfo[]>({
     queryKey: ["adminSets"],
@@ -69,6 +73,31 @@ export function SyncClient() {
       toast.error(msg);
     },
   });
+
+  const { mutate: updatePrice } = useMutation({
+    mutationFn: ({ setId, packPrice }: { setId: string; packPrice: number }) =>
+      axios.patch(`/api/admin/sets/${setId}`, { packPrice }).then((r) => r.data),
+    onSuccess: (_, { setId, packPrice }) => {
+      setEditingPrice(null);
+      qc.invalidateQueries({ queryKey: ["adminSets"] });
+      toast.success(`가격이 ${packPrice.toLocaleString()} 코인으로 변경되었습니다.`);
+    },
+    onError: () => toast.error("가격 변경 실패"),
+  });
+
+  function startEditPrice(setId: string, currentPrice: number) {
+    setEditingPrice(setId);
+    setPriceInput(String(currentPrice));
+  }
+
+  function savePrice(setId: string) {
+    const price = parseInt(priceInput);
+    if (isNaN(price) || price < 0) {
+      toast.error("올바른 숫자를 입력해주세요.");
+      return;
+    }
+    updatePrice({ setId, packPrice: price });
+  }
 
   // 시리즈별 그룹화
   const grouped = sets.reduce<Record<string, SetInfo[]>>((acc, s) => {
@@ -173,17 +202,43 @@ export function SyncClient() {
                           <span className="font-medium text-white text-sm truncate">{set.name}</span>
                           <span className="text-xs text-white/30 shrink-0">{set.id}</span>
                         </div>
-                        <div className="text-xs text-white/40 mt-0.5">
-                          {set.releaseDate} · 총 {set.total}장
+                        <div className="flex items-center gap-3 text-xs text-white/40 mt-0.5 flex-wrap">
+                          <span>{set.releaseDate} · 총 {set.total}장</span>
                           {set.synced && (
-                            <span className="text-green-400 ml-2">
-                              DB {set.syncedCount}장
-                            </span>
+                            <span className="text-green-400">DB {set.syncedCount}장</span>
                           )}
                           {result && (
-                            <span className="text-yellow-400 ml-2">
-                              +{result.newCards}장 추가됨
-                            </span>
+                            <span className="text-yellow-400">+{result.newCards}장 추가됨</span>
+                          )}
+                          {/* 가격 편집 */}
+                          {set.synced && (
+                            editingPrice === set.id ? (
+                              <div className="flex items-center gap-1">
+                                <input
+                                  type="number"
+                                  value={priceInput}
+                                  onChange={(e) => setPriceInput(e.target.value)}
+                                  onKeyDown={(e) => e.key === "Enter" && savePrice(set.id)}
+                                  className="w-20 bg-zinc-700 border border-yellow-500/50 rounded px-2 py-0.5 text-white text-xs outline-none"
+                                  autoFocus
+                                />
+                                <span className="text-white/30">코인</span>
+                                <button onClick={() => savePrice(set.id)} className="text-green-400 hover:text-green-300">
+                                  <Check className="w-3.5 h-3.5" />
+                                </button>
+                                <button onClick={() => setEditingPrice(null)} className="text-white/30 hover:text-white/60">
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => startEditPrice(set.id, set.packPrice)}
+                                className="flex items-center gap-1 text-yellow-400/80 hover:text-yellow-300 transition-colors"
+                              >
+                                <span>💰 {set.packPrice.toLocaleString()} 코인</span>
+                                <Pencil className="w-3 h-3" />
+                              </button>
+                            )
                           )}
                         </div>
                       </div>

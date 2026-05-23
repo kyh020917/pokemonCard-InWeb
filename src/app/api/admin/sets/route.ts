@@ -16,26 +16,31 @@ export async function GET() {
   const [apiRes, dbSets] = await Promise.all([
     fetch(`${API_BASE}/sets?orderBy=-releaseDate&pageSize=50`, { headers: fetchHeaders }),
     prisma.cardSet.findMany({
-      select: { id: true, _count: { select: { cards: true } } },
+      select: { id: true, packPrice: true, isActive: true, _count: { select: { cards: true } } },
     }),
   ]);
 
   const apiData = await apiRes.json();
-  const dbMap = new Map(dbSets.map((s) => [s.id, s._count.cards]));
+  const dbMap = new Map(dbSets.map((s) => [s.id, s]));
 
   const sets = (apiData.data ?? []).map((s: {
     id: string; name: string; series: string; total: number;
     releaseDate: string; images?: { logo?: string };
-  }) => ({
-    id: s.id,
-    name: s.name,
-    series: s.series,
-    total: s.total,
-    releaseDate: s.releaseDate,
-    logoUrl: s.images?.logo ?? null,
-    synced: dbMap.has(s.id),
-    syncedCount: dbMap.get(s.id) ?? 0,
-  }));
+  }) => {
+    const db = dbMap.get(s.id);
+    return {
+      id: s.id,
+      name: s.name,
+      series: s.series,
+      total: s.total,
+      releaseDate: s.releaseDate,
+      logoUrl: s.images?.logo ?? null,
+      synced: !!db,
+      syncedCount: db?._count.cards ?? 0,
+      packPrice: db?.packPrice ?? 300,
+      isActive: db?.isActive ?? true,
+    };
+  });
 
   return NextResponse.json({ sets });
 }

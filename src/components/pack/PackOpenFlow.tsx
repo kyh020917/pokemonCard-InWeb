@@ -85,13 +85,7 @@ export function PackOpenFlow({
     setMode(selectedMode);
     setRevealedCount(0);
     setStep("opening");
-    openPack(undefined, {
-      onSuccess: () => {
-        if (selectedMode === "skip") {
-          setTimeout(() => setStep("result"), 300);
-        }
-      },
-    });
+    openPack();
   }
 
   function handleCardRevealed() {
@@ -171,13 +165,10 @@ export function PackOpenFlow({
             className="flex flex-col items-center gap-8"
           >
             {mode === "one_by_one" && (
-              <OneByOneView cards={cards} onReveal={handleCardRevealed} />
+              <OneByOneView cards={cards} onReveal={handleCardRevealed} onDone={handleReset} />
             )}
             {mode === "all_at_once" && (
               <AllAtOnceView cards={cards} onAllRevealed={() => setTimeout(() => setStep("result"), 1000)} />
-            )}
-            {mode === "skip" && (
-              <div className="text-white/50">불러오는 중...</div>
             )}
           </motion.div>
         )}
@@ -261,12 +252,15 @@ export function PackOpenFlow({
 function OneByOneView({
   cards,
   onReveal,
+  onDone,
 }: {
   cards: CardResult[];
   onReveal: () => void;
+  onDone: () => void;
 }) {
   const [current, setCurrent] = useState(0);
   const [shown, setShown] = useState<number[]>([]);
+  const done = current >= cards.length;
 
   function handleFlip() {
     if (current >= cards.length) return;
@@ -278,32 +272,45 @@ function OneByOneView({
   const card = cards[current];
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      <p className="text-white/50 text-sm">
-        {current < cards.length
-          ? `${current + 1} / ${cards.length} 장`
-          : "모두 공개되었습니다"}
+    <div className="flex flex-col items-center gap-6 w-full max-w-2xl">
+      {/* 진행 표시 */}
+      <p className="text-white/50 text-sm font-medium">
+        {done ? "✨ 모두 공개되었습니다" : `${current + 1} / ${cards.length} 장`}
       </p>
 
-      <div className="flex gap-4 flex-wrap justify-center">
-        {shown.map((idx) => (
-          <div key={idx} className="opacity-60 scale-90 transition-all">
-            <HoloEffect tier={cards[idx].card.tier}>
-              <div className="relative w-28 h-40 rounded-xl overflow-hidden">
-                <Image
-                  src={cards[idx].card.imageLarge}
-                  alt={cards[idx].card.name}
-                  fill
-                  className="object-cover"
-                  sizes="112px"
-                />
-              </div>
-            </HoloEffect>
-          </div>
-        ))}
-      </div>
+      {/* 공개된 카드들 */}
+      {shown.length > 0 && (
+        <div className="flex gap-3 flex-wrap justify-center">
+          {shown.map((idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, scale: 0.8, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="flex flex-col items-center gap-1"
+            >
+              <HoloEffect tier={cards[idx].card.tier}>
+                <div className="relative w-24 h-32 rounded-xl overflow-hidden ring-1 ring-white/20">
+                  <Image
+                    src={cards[idx].card.imageLarge}
+                    alt={cards[idx].card.name}
+                    fill
+                    className="object-cover"
+                    sizes="96px"
+                  />
+                </div>
+              </HoloEffect>
+              <TierBadge tier={cards[idx].card.tier} />
+              <span className="text-[10px] text-white/50 text-center max-w-[96px] truncate">
+                {cards[idx].card.name}
+              </span>
+            </motion.div>
+          ))}
+        </div>
+      )}
 
-      {current < cards.length && card && (
+      {/* 현재 뒤집을 카드 */}
+      {!done && card && (
         <CardFlip
           key={current}
           card={{ ...card.card, isNew: card.isNew }}
@@ -312,8 +319,33 @@ function OneByOneView({
         />
       )}
 
-      {current < cards.length && (
+      {!done && (
         <p className="text-white/40 text-sm animate-pulse">카드를 탭하여 공개</p>
+      )}
+
+      {/* 완료 후 버튼 */}
+      {done && (
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="flex gap-3 mt-2"
+        >
+          <Button
+            onClick={onDone}
+            variant="outline"
+            className="gap-2 border-white/20 hover:bg-white/10"
+          >
+            <RotateCcw className="w-4 h-4" />
+            다시 뽑기
+          </Button>
+          <Link href="/collection">
+            <Button className="gap-2 bg-zinc-700 hover:bg-zinc-600">
+              <BookOpen className="w-4 h-4" />
+              도감 보기
+            </Button>
+          </Link>
+        </motion.div>
       )}
     </div>
   );

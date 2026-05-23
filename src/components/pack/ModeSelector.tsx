@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-export type OpenMode = "one_by_one" | "all_at_once" | "skip";
+export type OpenMode = "one_by_one" | "all_at_once";
 
 const MODES: { id: OpenMode; label: string; emoji: string; desc: string }[] = [
   {
@@ -16,12 +16,6 @@ const MODES: { id: OpenMode; label: string; emoji: string; desc: string }[] = [
     label: "전체 공개",
     emoji: "✨",
     desc: "5장을 한번에 펼쳐보기",
-  },
-  {
-    id: "skip",
-    label: "바로 결과",
-    emoji: "⚡",
-    desc: "애니메이션 없이 결과 확인",
   },
 ];
 

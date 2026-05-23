@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { Tier } from "@prisma/client";
-import { Search, SlidersHorizontal, LayoutGrid, List } from "lucide-react";
+import { Search, LayoutGrid, List } from "lucide-react";
 import { CollectionCard } from "./CollectionCard";
 import { CardDetailModal } from "./CardDetailModal";
 import { SetProgress } from "./SetProgress";
@@ -113,11 +113,11 @@ export function CollectionClient({ sets }: { sets: { id: string; name: string }[
       )}
 
       <Tabs defaultValue="cards">
-        <TabsList className="bg-zinc-800 border border-white/10">
-          <TabsTrigger value="cards" className="gap-2 data-[state=active]:bg-zinc-700">
+        <TabsList className="bg-white border border-gray-200 shadow-sm">
+          <TabsTrigger value="cards" className="gap-2 text-gray-600 data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900">
             <LayoutGrid className="w-4 h-4" /> 카드 목록
           </TabsTrigger>
-          <TabsTrigger value="sets" className="gap-2 data-[state=active]:bg-zinc-700">
+          <TabsTrigger value="sets" className="gap-2 text-gray-600 data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900">
             <List className="w-4 h-4" /> 세트별 완성도
           </TabsTrigger>
         </TabsList>
@@ -126,20 +126,20 @@ export function CollectionClient({ sets }: { sets: { id: string; name: string }[
           {/* 필터 바 */}
           <div className="flex flex-wrap gap-3">
             <div className="relative flex-1 min-w-48">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="카드 이름 검색..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-zinc-800 border border-white/10 rounded-xl text-sm text-white placeholder-white/30 focus:outline-none focus:border-yellow-500/50"
+                className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-yellow-400 shadow-sm"
               />
             </div>
 
             <select
               value={selectedSet}
               onChange={(e) => setSelectedSet(e.target.value)}
-              className="px-3 py-2 bg-zinc-800 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-yellow-500/50"
+              className="px-3 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:border-yellow-400 shadow-sm"
             >
               <option value="all">전체 세트</option>
               {sets.map((s) => (
@@ -150,7 +150,7 @@ export function CollectionClient({ sets }: { sets: { id: string; name: string }[
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 bg-zinc-800 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-yellow-500/50"
+              className="px-3 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:border-yellow-400 shadow-sm"
             >
               {SORT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
@@ -164,8 +164,8 @@ export function CollectionClient({ sets }: { sets: { id: string; name: string }[
               onClick={() => setSelectedTier("all")}
               className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
                 selectedTier === "all"
-                  ? "bg-white text-black border-white"
-                  : "border-white/20 text-white/50 hover:border-white/40"
+                  ? "bg-gray-900 text-white border-gray-900"
+                  : "border-gray-200 text-gray-500 hover:border-gray-400 bg-white"
               }`}
             >
               전체
@@ -191,14 +191,14 @@ export function CollectionClient({ sets }: { sets: { id: string; name: string }[
               />
             </div>
           ) : sorted.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-white/30">
+            <div className="flex flex-col items-center justify-center py-24 text-gray-400">
               <span className="text-5xl mb-3">📭</span>
               <p className="font-medium">보유한 카드가 없습니다</p>
               <p className="text-sm mt-1">팩을 뽑아서 카드를 모아보세요!</p>
             </div>
           ) : (
             <>
-              <p className="text-xs text-white/30">{sorted.length}종 표시 중</p>
+              <p className="text-xs text-gray-400">{sorted.length}종 표시 중</p>
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
                 {sorted.map((uc, i) => (
                   <CollectionCard
@@ -250,11 +250,11 @@ function StatBox({
   highlight?: boolean;
 }) {
   return (
-    <div className={`rounded-2xl p-4 border ${highlight ? "bg-yellow-500/10 border-yellow-500/30" : "bg-zinc-800/60 border-white/10"}`}>
-      <p className="text-xs text-white/40">{label}</p>
-      <p className={`text-2xl font-black mt-1 ${highlight ? "text-yellow-300" : "text-white"}`}>
+    <div className={`rounded-2xl p-4 border shadow-sm ${highlight ? "bg-yellow-50 border-yellow-200" : "bg-white border-gray-200"}`}>
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className={`text-2xl font-black mt-1 ${highlight ? "text-yellow-600" : "text-gray-900"}`}>
         {value}
-        <span className={`text-sm font-medium ml-1 ${highlight ? "text-yellow-400/70" : "text-white/40"}`}>
+        <span className={`text-sm font-medium ml-1 ${highlight ? "text-yellow-500" : "text-gray-400"}`}>
           {unit}
         </span>
       </p>

@@ -68,8 +68,8 @@ export function TradeClient() {
       </div>
 
       <Tabs defaultValue="incoming">
-        <TabsList className="bg-zinc-800 border border-white/10">
-          <TabsTrigger value="incoming" className="gap-2 data-[state=active]:bg-zinc-700">
+        <TabsList className="bg-white border border-gray-200 shadow-sm">
+          <TabsTrigger value="incoming" className="gap-2 text-gray-600 data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900">
             <Inbox className="w-4 h-4" />
             받은 제안
             {incoming.length > 0 && (
@@ -78,11 +78,11 @@ export function TradeClient() {
               </span>
             )}
           </TabsTrigger>
-          <TabsTrigger value="outgoing" className="gap-2 data-[state=active]:bg-zinc-700">
+          <TabsTrigger value="outgoing" className="gap-2 text-gray-600 data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900">
             <Send className="w-4 h-4" />
             보낸 제안
             {outgoing.length > 0 && (
-              <span className="ml-1 bg-zinc-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="ml-1 bg-gray-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {outgoing.length}
               </span>
             )}
@@ -140,7 +140,7 @@ export function TradeClient() {
 
 function Empty({ text }: { text: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-white/30">
+    <div className="flex flex-col items-center justify-center py-24 text-gray-400">
       <span className="text-5xl mb-3">🤝</span>
       <p className="font-medium">{text}</p>
     </div>

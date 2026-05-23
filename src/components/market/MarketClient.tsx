@@ -89,20 +89,20 @@ export function MarketClient({ sets }: { sets: { id: string; name: string }[] })
       <div className="flex flex-wrap gap-3 items-center justify-between">
         <div className="flex flex-wrap gap-3 flex-1">
           <div className="relative min-w-48 flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
               placeholder="카드 이름 검색..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-zinc-800 border border-white/10 rounded-xl text-sm text-white placeholder-white/30 focus:outline-none focus:border-yellow-500/50"
+              className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-yellow-400 shadow-sm"
             />
           </div>
 
           <select
             value={selectedSet}
             onChange={(e) => setSelectedSet(e.target.value)}
-            className="px-3 py-2 bg-zinc-800 border border-white/10 rounded-xl text-sm text-white focus:outline-none"
+            className="px-3 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:border-yellow-400 shadow-sm"
           >
             <option value="all">전체 세트</option>
             {sets.map((s) => (
@@ -114,7 +114,7 @@ export function MarketClient({ sets }: { sets: { id: string; name: string }[] })
             variant="outline"
             size="sm"
             onClick={() => setShowMine((v) => !v)}
-            className={`gap-2 border-white/20 ${showMine ? "bg-white/10 text-white" : "text-white/50"}`}
+            className={`gap-2 border-gray-200 shadow-sm ${showMine ? "bg-gray-900 text-white border-gray-900" : "text-gray-600 bg-white hover:bg-gray-50"}`}
           >
             <SlidersHorizontal className="w-4 h-4" />
             내 매물
@@ -137,7 +137,9 @@ export function MarketClient({ sets }: { sets: { id: string; name: string }[] })
         <button
           onClick={() => setSelectedTier("all")}
           className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
-            selectedTier === "all" ? "bg-white text-black border-white" : "border-white/20 text-white/50 hover:border-white/40"
+            selectedTier === "all"
+              ? "bg-gray-900 text-white border-gray-900"
+              : "border-gray-200 text-gray-500 hover:border-gray-400 bg-white"
           }`}
         >
           전체
@@ -163,13 +165,13 @@ export function MarketClient({ sets }: { sets: { id: string; name: string }[] })
           />
         </div>
       ) : listings.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-white/30">
+        <div className="flex flex-col items-center justify-center py-24 text-gray-400">
           <span className="text-5xl mb-3">🏪</span>
           <p className="font-medium">등록된 매물이 없습니다</p>
         </div>
       ) : (
         <>
-          <p className="text-xs text-white/30">{listings.length}개 매물</p>
+          <p className="text-xs text-gray-400">{listings.length}개 매물</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {listings.map((listing, i) => (
               <ListingCard

@@ -140,12 +140,12 @@ export function ShopClient() {
         {ALL_TIERS.map((tier) => {
           const config = tierMap.get(tier);
           return (
-            <div key={tier} className="bg-zinc-900 border border-white/10 rounded-xl p-3 text-center">
+            <div key={tier} className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
               <TierBadge tier={tier} />
-              <p className="text-yellow-300 font-bold text-sm mt-2">
+              <p className="text-yellow-600 font-bold text-sm mt-2">
                 {config ? config.price.toLocaleString() : "…"}
               </p>
-              <p className="text-white/30 text-[10px]">코인/장</p>
+              <p className="text-gray-400 text-[10px]">코인/장</p>
             </div>
           );
         })}
@@ -154,12 +154,12 @@ export function ShopClient() {
       {/* 검색 + 필터 */}
       <div className="flex gap-3 flex-wrap mb-5">
         <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="카드 이름 검색..."
-            className="w-full bg-zinc-900 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-yellow-500/50"
+            className="w-full bg-white border border-gray-200 rounded-xl pl-9 pr-4 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-yellow-400 shadow-sm"
           />
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -169,8 +169,8 @@ export function ShopClient() {
               onClick={() => setFilterTier(t)}
               className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors ${
                 filterTier === t
-                  ? "bg-yellow-500/20 border-yellow-500/50 text-yellow-300"
-                  : "bg-zinc-900 border-white/10 text-white/50 hover:border-white/30"
+                  ? "bg-yellow-100 border-yellow-400 text-yellow-700"
+                  : "bg-white border-gray-200 text-gray-500 hover:border-gray-400 shadow-sm"
               }`}
             >
               {t === "ALL" ? "전체" : t}
@@ -181,9 +181,9 @@ export function ShopClient() {
 
       {/* 카드 목록 */}
       {isLoading ? (
-        <div className="text-center py-20 text-white/40">불러오는 중...</div>
+        <div className="text-center py-20 text-gray-400">불러오는 중...</div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-20 text-white/40">판매할 카드가 없습니다</div>
+        <div className="text-center py-20 text-gray-400">판매할 카드가 없습니다</div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {filtered.map((uc) => {

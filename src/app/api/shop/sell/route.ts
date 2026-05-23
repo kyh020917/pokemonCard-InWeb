@@ -34,10 +34,8 @@ export async function POST(req: NextRequest) {
   const tiers = await prisma.tierConfig.findMany();
   const tierMap = new Map(tiers.map((t) => [t.tier, t]));
 
+  // 유효성 검사 먼저
   let totalCoins = 0;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ops: Promise<any>[] = [];
-
   for (const item of items) {
     const uc = userCards.find((c) => c.id === item.userCardId)!;
     const config = tierMap.get(uc.card.tier);
@@ -54,35 +52,37 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
     totalCoins += config.price * item.quantity;
-
-    ops.push(
-      uc.quantity === item.quantity
-        ? prisma.userCard.delete({ where: { id: uc.id } })
-        : prisma.userCard.update({
-            where: { id: uc.id },
-            data: { quantity: { decrement: item.quantity } },
-          })
-    );
   }
 
-  ops.push(
-    prisma.user.update({
+  // interactive transaction으로 일괄 처리
+  await prisma.$transaction(async (tx) => {
+    for (const item of items) {
+      const uc = userCards.find((c) => c.id === item.userCardId)!;
+      if (uc.quantity === item.quantity) {
+        await tx.userCard.delete({ where: { id: uc.id } });
+      } else {
+        await tx.userCard.update({
+          where: { id: uc.id },
+          data: { quantity: { decrement: item.quantity } },
+        });
+      }
+    }
+
+    await tx.user.update({
       where: { id: session.user.id },
       data: { coins: { increment: totalCoins } },
-    }),
-    prisma.transaction.create({
+    });
+
+    await tx.transaction.create({
       data: {
         userId: session.user.id,
         type: "EARN",
         amount: totalCoins,
         reason: `shop_sell_batch:${items.length}cards`,
       },
-    })
-  );
-
-  await prisma.$transaction(ops);
+    });
+  });
 
   return NextResponse.json({
     success: true,

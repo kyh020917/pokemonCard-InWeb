@@ -18,15 +18,17 @@ export default async function ProfilePage({ params }: Props) {
 
   if (!user) notFound();
 
+  const displayUsername = user.username ?? username;
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white">{user.username}의 컬렉션</h1>
+        <h1 className="text-3xl font-black text-white">{displayUsername}의 컬렉션</h1>
         <p className="text-white/50 mt-1">공개 카드 컬렉션</p>
       </div>
       <ProfileClient
         userId={user.id}
-        username={user.username}
+        username={displayUsername}
         image={user.image}
         createdAt={user.createdAt.toISOString()}
       />

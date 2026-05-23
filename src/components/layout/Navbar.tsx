@@ -79,10 +79,10 @@ export function Navbar() {
             <>
               <CoinBadge coins={coins} />
               <div className="hidden md:flex items-center gap-2">
-                <Link href={`/profile/${session.user.username}`}>
+                <Link href={`/profile/${session.user.username ?? session.user.id}`}>
                   <Button variant="ghost" size="sm" className="gap-2">
                     <User className="w-4 h-4" />
-                    {session.user.username}
+                    {session.user.username ?? session.user.name ?? "트레이너"}
                   </Button>
                 </Link>
                 <Button

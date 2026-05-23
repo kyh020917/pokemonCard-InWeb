@@ -8,8 +8,8 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
       coins: number;
-      username: string;
-      referralCode: string;
+      username: string | null;
+      referralCode: string | null;
     };
   }
 }

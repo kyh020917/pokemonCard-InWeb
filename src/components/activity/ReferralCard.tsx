@@ -9,7 +9,7 @@ import { Copy, Users, Check, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Props {
-  myCode: string;
+  myCode: string | null;
   hasUsedReferral: boolean;
 }
 
@@ -20,7 +20,7 @@ export function ReferralCard({ myCode, hasUsedReferral }: Props) {
   const [success, setSuccess] = useState(false);
 
   const copyCode = () => {
-    navigator.clipboard.writeText(myCode);
+    navigator.clipboard.writeText(myCode ?? "");
     setCopied(true);
     toast.success("추천인 코드가 복사되었습니다!");
     setTimeout(() => setCopied(false), 2000);

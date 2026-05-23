@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
-import { RefreshCw, CheckCircle2, Circle, Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { RefreshCw, CheckCircle2, Circle, Loader2, ChevronDown, ChevronUp, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
@@ -30,23 +30,38 @@ export function SyncClient() {
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const [results, setResults] = useState<Record<string, SyncResult>>({});
   const [expandedSeries, setExpandedSeries] = useState<Set<string>>(new Set(["Scarlet & Violet"]));
+  const abortRef = useRef<AbortController | null>(null);
 
   const { data: sets = [], isLoading } = useQuery<SetInfo[]>({
     queryKey: ["adminSets"],
     queryFn: () => axios.get("/api/admin/sets").then((r) => r.data.sets),
   });
 
+  function handleCancel() {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setSyncingId(null);
+    toast.info("동기화가 취소되었습니다.");
+  }
+
   const { mutate: syncSet } = useMutation({
-    mutationFn: (setId: string) =>
-      axios.post<SyncResult>("/api/admin/sync", { setId }).then((r) => r.data),
+    mutationFn: (setId: string) => {
+      const controller = new AbortController();
+      abortRef.current = controller;
+      return axios
+        .post<SyncResult>("/api/admin/sync", { setId }, { signal: controller.signal })
+        .then((r) => r.data);
+    },
     onMutate: (setId) => setSyncingId(setId),
     onSuccess: (data, setId) => {
       setSyncingId(null);
+      abortRef.current = null;
       setResults((prev) => ({ ...prev, [setId]: data }));
       qc.invalidateQueries({ queryKey: ["adminSets"] });
       toast.success(`${data.setName} 동기화 완료! 신규 ${data.newCards}장 추가`);
     },
     onError: (err, setId) => {
+      if (axios.isCancel(err)) return; // 취소는 에러 토스트 없이
       setSyncingId(null);
       const msg = axios.isAxiosError(err)
         ? err.response?.data?.error ?? "동기화 실패"
@@ -174,29 +189,36 @@ export function SyncClient() {
                       </div>
 
                       {/* 상태 + 버튼 */}
-                      <div className="flex items-center gap-3 shrink-0">
+                      <div className="flex items-center gap-2 shrink-0">
                         {set.synced ? (
                           <CheckCircle2 className="w-4 h-4 text-green-400" />
                         ) : (
                           <Circle className="w-4 h-4 text-white/20" />
                         )}
-                        <Button
-                          size="sm"
-                          onClick={() => syncSet(set.id)}
-                          disabled={isSyncing || syncingId !== null}
-                          className={
-                            set.synced
-                              ? "bg-zinc-700 hover:bg-zinc-600 text-white/70"
-                              : "bg-yellow-500 hover:bg-yellow-400 text-black font-bold"
-                          }
-                        >
-                          {isSyncing ? (
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                          ) : (
+                        {isSyncing ? (
+                          <Button
+                            size="sm"
+                            onClick={handleCancel}
+                            className="bg-red-600 hover:bg-red-500 text-white font-bold"
+                          >
+                            <X className="w-3 h-3" />
+                            취소
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={() => syncSet(set.id)}
+                            disabled={syncingId !== null}
+                            className={
+                              set.synced
+                                ? "bg-zinc-700 hover:bg-zinc-600 text-white/70"
+                                : "bg-yellow-500 hover:bg-yellow-400 text-black font-bold"
+                            }
+                          >
                             <RefreshCw className="w-3 h-3" />
-                          )}
-                          {isSyncing ? "동기화 중..." : set.synced ? "재동기화" : "동기화"}
-                        </Button>
+                            {set.synced ? "재동기화" : "동기화"}
+                          </Button>
+                        )}
                       </div>
                     </div>
                   );

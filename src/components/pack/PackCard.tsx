@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Coins } from "lucide-react";
+import { useState } from "react";
 
 interface PackCardProps {
   id: string;
@@ -24,6 +25,8 @@ export function PackCard({
   cardCount,
   index,
 }: PackCardProps) {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -37,17 +40,19 @@ export function PackCard({
           className="group bg-zinc-800/60 border border-white/10 rounded-2xl p-5 flex flex-col items-center gap-4 hover:border-yellow-500/40 hover:bg-zinc-700/60 transition-colors cursor-pointer"
         >
           <div className="relative w-full h-28">
-            {logoUrl ? (
+            {logoUrl && !imgError ? (
               <Image
                 src={logoUrl}
                 alt={name}
                 fill
                 className="object-contain drop-shadow-lg group-hover:drop-shadow-2xl transition-all"
                 sizes="200px"
+                onError={() => setImgError(true)}
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-5xl">
-                🎴
+              <div className="w-full h-full flex flex-col items-center justify-center gap-1">
+                <span className="text-4xl">🎴</span>
+                <span className="text-xs text-white/30 font-medium">{name}</span>
               </div>
             )}
           </div>

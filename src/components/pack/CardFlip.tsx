@@ -42,6 +42,7 @@ export function CardFlip({
 }: CardFlipProps) {
   const [flipped, setFlipped] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const dim = SIZE[size];
   const isHighTier = HIGH_TIER.includes(card.tier);
 
@@ -95,7 +96,7 @@ export function CardFlip({
         <div className="card-face card-back absolute inset-0 rounded-xl overflow-hidden">
           <HoloEffect tier={card.tier}>
             <div className="relative" style={{ width: dim.w, height: dim.h }}>
-              {revealed && (
+              {revealed && !imgError && (
                 <Image
                   src={card.imageLarge}
                   alt={card.name}
@@ -103,7 +104,14 @@ export function CardFlip({
                   className="object-cover"
                   sizes={`${dim.w}px`}
                   priority
+                  onError={() => setImgError(true)}
                 />
+              )}
+              {revealed && imgError && (
+                <div className="w-full h-full bg-zinc-800 flex flex-col items-center justify-center gap-2 p-3">
+                  <span className="text-3xl">🎴</span>
+                  <span className="text-xs text-white/50 text-center leading-tight">{card.name}</span>
+                </div>
               )}
             </div>
           </HoloEffect>
